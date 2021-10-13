@@ -1,0 +1,18 @@
+/*! Gamajo Accessible Menu - v1.0.0 - 2014-09-08
+* https://github.com/GaryJones/accessible-menu
+* Copyright (c) 2014 Gary Jones; Licensed MIT */
+;(function($,window,document,undefined){'use strict';var pluginName='gamajoAccessibleMenu',hoverTimeout=[];function Plugin(element,options){this.element=element;this.opts=$.extend({},$.fn[pluginName].options,options);this.init()}
+$.extend(Plugin.prototype,{init:function(){$(this.element).on('mouseenter.'+pluginName,this.opts.menuItemSelector,this.opts,this.menuItemEnter).on('mouseleave.'+pluginName,this.opts.menuItemSelector,this.opts,this.menuItemLeave).find('a').on('focus.'+pluginName+', blur.'+pluginName,this.opts,this.menuItemToggleClass)},menuItemEnter:function(event){$.each(hoverTimeout,function(index){$('#'+index).removeClass(event.data.hoverClass);clearTimeout(hoverTimeout[index])});hoverTimeout=[];$(this).addClass(event.data.hoverClass)},menuItemLeave:function(event){var $self=$(this);hoverTimeout[this.id]=setTimeout(function(){$self.removeClass(event.data.hoverClass)},event.data.hoverDelay)},menuItemToggleClass:function(event){$(this).parents(event.data.menuItemSelector).toggleClass(event.data.hoverClass)}});$.fn[pluginName]=function(options){this.each(function(){if(!$.data(this,'plugin_'+pluginName)){$.data(this,'plugin_'+pluginName,new Plugin(this,options))}});return this};$.fn[pluginName].options={hoverClass:'menu-item-hover',hoverDelay:250,menuItemSelector:'.menu-item'}})(jQuery,window,document);
+/**
+ * Dear General Scripts
+ *
+ * @copyright Copyright (c) 2016, Shay Bocks
+ * @license   MIT
+ */
+(function($,undefined){'use strict';var $document=$(document),$navs=$('nav');function debouncedResize(c,t){onresize=function(){clearTimeout(t);t=setTimeout(c,100)};return c}
+function isHidden($object){var element=$object[0];return(null===element.offsetParent)}
+function addNavToggles(){$navs.before('<div class="menu-toggle"><span></span></div>');$navs.find('.sub-menu').before('<div class="sub-menu-toggle"></div>')}
+function showHideNav(){$('.menu-toggle, .sub-menu-toggle').on('click',function(){var $that=$(this);$that.toggleClass('active');$that.next('nav, .sub-menu').slideToggle('slow')})}
+function reflowNavs(){if(isHidden($navs)){$navs.removeAttr('style');$('.sub-menu-toggle, .menu-toggle').removeClass('active')}}
+function navInit(){addNavToggles();showHideNav();debouncedResize(function(){reflowNavs()})()}
+$document.ready(function(){$document.gamajoAccessibleMenu();navInit()})}(jQuery))
